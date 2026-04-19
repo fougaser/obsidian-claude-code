@@ -4,6 +4,8 @@
 
 ### Run Claude Code in Obsidian's sidebar under your personal subscription.
 
+![Claude Code running in Obsidian's right sidebar](./docs/demo.jpg)
+
 [![Obsidian](https://img.shields.io/badge/Obsidian-1.5.0+-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md)
 [![Platform](https://img.shields.io/badge/platform-macOS%20desktop-444)](#compatibility)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
