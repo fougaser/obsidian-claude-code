@@ -13,7 +13,7 @@ export class ClaudeSubscriptionSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Claude Subscription' });
+        containerEl.createEl('h2', { text: 'Claude Code' });
 
         new Setting(containerEl)
             .setName('Run setup assistant')

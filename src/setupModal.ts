@@ -28,7 +28,7 @@ export class SetupModal extends Modal {
     }
 
     onOpen(): void {
-        this.titleEl.setText(this.opts.rotateOnly ? 'Rotate token' : 'Claude Subscription setup');
+        this.titleEl.setText(this.opts.rotateOnly ? 'Rotate token' : 'Claude Code setup');
 
         const desc = this.contentEl.createEl('p');
         desc.setText(
@@ -147,7 +147,7 @@ export class SetupModal extends Modal {
                 this.log(ok ? '✓ Token works. You are set.' : '✗ `claude auth status` did not report loggedIn=true.');
             }
 
-            new Notice('Claude Subscription setup complete.');
+            new Notice('Claude Code setup complete.');
             await this.opts.onComplete();
         } catch (err) {
             this.log(`Error: ${(err as Error).message}`);

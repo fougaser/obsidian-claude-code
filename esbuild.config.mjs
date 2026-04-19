@@ -2,7 +2,7 @@ import esbuild from 'esbuild';
 import process from 'process';
 import builtins from 'builtin-modules';
 
-const banner = `/* obsidian-claude-subscription — generated bundle. Source at ~/Codexium/Obsidian/obsidian-claude-subscription. */\n`;
+const banner = `/* obsidian-claude-code — generated bundle. Source at ~/Codexium/Obsidian/obsidian-claude-code. */\n`;
 
 const prod = process.argv[2] === 'production';
 

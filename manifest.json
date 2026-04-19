@@ -1,6 +1,6 @@
 {
-  "id": "obsidian-claude-subscription",
-  "name": "Claude Subscription",
+  "id": "obsidian-claude-code",
+  "name": "Claude Code",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
   "description": "Run Claude Code in Obsidian's sidebar under your personal subscription — isolated token, one-click setup.",

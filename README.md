@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🤖 Claude Subscription
+# 🤖 Claude Code Subscription Inside Obsidian
 
 ### Run Claude Code in Obsidian's sidebar under your personal subscription.
 
@@ -43,17 +43,17 @@ No custom frontend. No direct API calls. No token reuse across machines. Same HT
 ## Installation (future)
 
 ```bash
-git clone https://github.com/fougaser/obsidian-claude-subscription.git
-cd obsidian-claude-subscription
+git clone https://github.com/fougaser/obsidian-claude-code.git
+cd obsidian-claude-code
 npm install
 npm run build
 ```
 
-Symlink the three artifacts into your vault's `.obsidian/plugins/obsidian-claude-subscription/`:
+Symlink the three artifacts into your vault's `.obsidian/plugins/obsidian-claude-code/`:
 
 ```bash
-ln -s "$PWD/main.js"       <vault>/.obsidian/plugins/obsidian-claude-subscription/main.js
-ln -s "$PWD/manifest.json" <vault>/.obsidian/plugins/obsidian-claude-subscription/manifest.json
+ln -s "$PWD/main.js"       <vault>/.obsidian/plugins/obsidian-claude-code/main.js
+ln -s "$PWD/manifest.json" <vault>/.obsidian/plugins/obsidian-claude-code/manifest.json
 ```
 
 Enable in `Settings → Community plugins`.
