@@ -13,6 +13,25 @@ const CLAUDE_ICON_SVG =
     '<path fill="currentColor" d="M50 6c2.2 23 9.6 30.8 38 42-28.4 11.2-35.8 19-38 42-2.2-23-9.6-30.8-38-42 28.4-11.2 35.8-19 38-42z"/>';
 const O_TERMINAL_COMMAND_ID = 'o-terminal:open-terminal';
 
+// Keys that belong to the terminal but are otherwise swallowed by Obsidian's
+// global hotkey manager before xterm receives them. When focus is inside an
+// xterm container we stop propagation in the capture phase so the event still
+// reaches the target (xterm) but Obsidian's document-level bubble listener
+// never sees it. Keep this list conservative — each entry is a documented
+// terminal interaction.
+const TERMINAL_PASSTHROUGH_KEYS = new Set<string>([
+    'Tab',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight'
+]);
+
+// xterm.js marks its root element with this class; matching on it is more
+// robust than matching on O Terminal's workspace view data-type because it
+// still works if the terminal is popped out, embedded, or re-themed.
+const XTERM_ROOT_SELECTOR = '.xterm';
+
 export default class ClaudeSubscriptionPlugin extends Plugin {
     settings: ClaudeSubscriptionSettings = DEFAULT_SETTINGS;
 
@@ -48,6 +67,35 @@ export default class ClaudeSubscriptionPlugin extends Plugin {
             name: 'Open Claude Code terminal',
             callback: () => this.openClaudeTerminal()
         });
+
+        this.installTerminalKeyPassthrough();
+    }
+
+    // When the active event target is inside an xterm container, prevent
+    // Obsidian's global hotkey manager from consuming keys that belong to the
+    // terminal (Tab and arrow keys primarily). The listener runs in the capture
+    // phase on document, so xterm's own target-phase listener still fires.
+    private terminalKeyHandler: ((e: KeyboardEvent) => void) | null = null;
+
+    private installTerminalKeyPassthrough(): void {
+        const handler = (e: KeyboardEvent): void => {
+            if (!TERMINAL_PASSTHROUGH_KEYS.has(e.key)) return;
+            const target = e.target as HTMLElement | null;
+            if (!target || !target.closest(XTERM_ROOT_SELECTOR)) return;
+            e.stopPropagation();
+        };
+        document.addEventListener('keydown', handler, { capture: true });
+        this.terminalKeyHandler = handler;
+    }
+
+    private uninstallTerminalKeyPassthrough(): void {
+        if (!this.terminalKeyHandler) return;
+        document.removeEventListener(
+            'keydown',
+            this.terminalKeyHandler,
+            { capture: true } as AddEventListenerOptions
+        );
+        this.terminalKeyHandler = null;
     }
 
     openClaudeTerminal(): void {
@@ -64,7 +112,7 @@ export default class ClaudeSubscriptionPlugin extends Plugin {
     }
 
     async onunload(): Promise<void> {
-        // nothing to tear down
+        this.uninstallTerminalKeyPassthrough();
     }
 
     async updateSettings(patch: Partial<ClaudeSubscriptionSettings>): Promise<void> {
