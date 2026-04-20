@@ -1,4 +1,4 @@
-import { Notice, Plugin } from 'obsidian';
+import { addIcon, Notice, Plugin } from 'obsidian';
 import { ClaudeSubscriptionSettingTab } from './settingsTab';
 import { SetupModal } from './setupModal';
 import { checkToken } from './claudeCli';
@@ -8,6 +8,11 @@ import { expandHome, whichClaude } from './shell';
 import { ClaudeSubscriptionSettings, DEFAULT_SETTINGS, mergeSettings } from './settings';
 import * as fs from 'fs/promises';
 
+const CLAUDE_ICON_ID = 'claude-code-logo';
+const CLAUDE_ICON_SVG =
+    '<path fill="currentColor" d="M50 6c2.2 23 9.6 30.8 38 42-28.4 11.2-35.8 19-38 42-2.2-23-9.6-30.8-38-42 28.4-11.2 35.8-19 38-42z"/>';
+const O_TERMINAL_COMMAND_ID = 'o-terminal:open-terminal';
+
 export default class ClaudeSubscriptionPlugin extends Plugin {
     settings: ClaudeSubscriptionSettings = DEFAULT_SETTINGS;
 
@@ -15,7 +20,13 @@ export default class ClaudeSubscriptionPlugin extends Plugin {
         const stored = (await this.loadData()) as Partial<ClaudeSubscriptionSettings> | null;
         this.settings = mergeSettings(stored);
 
+        addIcon(CLAUDE_ICON_ID, CLAUDE_ICON_SVG);
+
         this.addSettingTab(new ClaudeSubscriptionSettingTab(this.app, this));
+
+        this.addRibbonIcon(CLAUDE_ICON_ID, 'Open Claude Code terminal', () => {
+            this.openClaudeTerminal();
+        });
 
         this.addCommand({
             id: 'claude-subscription-setup',
@@ -32,6 +43,24 @@ export default class ClaudeSubscriptionPlugin extends Plugin {
             name: 'Check health',
             callback: () => this.runHealthCheck()
         });
+        this.addCommand({
+            id: 'claude-subscription-open-terminal',
+            name: 'Open Claude Code terminal',
+            callback: () => this.openClaudeTerminal()
+        });
+    }
+
+    openClaudeTerminal(): void {
+        const commands = (this.app as unknown as {
+            commands?: { executeCommandById?: (id: string) => boolean };
+        }).commands;
+        const ran = commands?.executeCommandById?.(O_TERMINAL_COMMAND_ID) ?? false;
+        if (!ran) {
+            new Notice(
+                'Could not open terminal. Make sure the "O Terminal" plugin is installed and enabled.',
+                8000
+            );
+        }
     }
 
     async onunload(): Promise<void> {
